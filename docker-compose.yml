@@ -1,0 +1,109 @@
+services:
+  # -----------------------------
+  # Database (PostgreSQL)
+  # -----------------------------
+  postgres:
+    image: postgres:15-alpine
+    container_name: aiims-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  # -----------------------------
+  # Cache & Queue (Redis)
+  # -----------------------------
+  redis:
+    image: redis:alpine
+    container_name: aiims-redis
+    restart: always
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
+  # -----------------------------
+  # Backend (NestJS)
+  # -----------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aiims-backend
+    restart: always
+    ports:
+      - "${BACKEND_PORT}:4000"
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app-network
+
+  # -----------------------------
+  # Frontend (React + Vite)
+  # -----------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: aiims-frontend
+    restart: always
+    ports:
+      - "${FRONTEND_PORT}:3000" # Vite default port mapped to host
+    environment:
+      - VITE_API_URL=http://localhost:${BACKEND_PORT}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - app-network
+
+  # -----------------------------
+  # Workflow Automation (n8n)
+  # -----------------------------
+  n8n:
+    image: n8nio/n8n
+    container_name: aiims-n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=Asia/Tokyo
+      - TZ=Asia/Tokyo
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  n8n_data:

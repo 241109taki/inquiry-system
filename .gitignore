@@ -1,0 +1,28 @@
+.env
+.env.*
+!.env.example
+
+# --- 依存関係 ---
+node_modules/
+
+# --- システムファイル ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# --- Docker関連のデータ（誤ってローカルにマウントした場合の保険） ---
+postgres_data/
+redis_data/
+n8n_data/
+
+# --- その他 ---
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# --- ビルド生成物 ---
+dist/
+build/

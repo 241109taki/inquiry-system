@@ -3,12 +3,7 @@ import React, { useEffect, useState} from 'react';
 import { Button } from "@/components/ui/button"
 import {
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
 
 // --- 型定義 ---
@@ -84,72 +79,75 @@ function App() {
   };
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-10">
-      <header>
-        <h1  className="text-3xl font-bold mb-4">問い合わせ管理システム</h1>
+      <header className="w-full border-b bg-white">
+        <div className="max-w-4xl mx-auto py-4 px-4">
+          <h1  className="text-2xl font-semibold tracking-tight">問い合わせ管理システム</h1>
+        </div>
       </header>
+      <main className="max-w-4xl mx-auto mt-8 px-4">
+        {/* 新規投稿フォーム */}
+        <Card className="p-6 space-y-6 gap-0">
+          <div>
+            <h2 className="text-xl font-semibold">📝 新規問い合わせ作成</h2>
+          </div>
+          <CardContent className="pt-0 space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6 mt-2">
+              <div className="flex flex-col gap-3">
+                <input
+                  type="text"
+                  placeholder="タイトル (例: ログインできない)"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                  className="w-full rounded-md border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <textarea
+                  placeholder="詳細内容を入力してください..."
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  required
+                  className="w-full rounded-md border border-gray-300 p-3 min-h-[120px] focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <Button type="submit" disabled={loading} className="w-full font-bold">
+                {loading ? '送信中...' : '送信する'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
 
-      {/* 新規投稿フォーム */}
-      <Card className="p-6 space-y-6">
-        <CardHeader className="pb-0">
-          <CardTitle>📝 新規問い合わせ作成</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6 mt-4">
-            <div className="flex flex-col gap-3">
-              <input
-                type="text"
-                placeholder="タイトル (例: ログインできない)"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-                className="w-full rounded-md border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <textarea
-                placeholder="詳細内容を入力してください..."
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                required
-                className="w-full rounded-md border border-gray-300 p-3 min-h-[120px] focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <Button type="submit" disabled={loading} className="w-full font-bold">
-              {loading ? '送信中...' : 'チケットを作成する'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
-      {/* チケット一覧 */}
-      <div className="space-y-4">
-        <h3 className="text-xl font-semibold">📂 問い合わせ履歴 ({tickets.length}件)</h3>
-        {tickets.length === 0 ? (
-          <p className="text-gray-500">まだチケットがありません。</p>
-        ) : (
-          <ul className="space-y-4">
-            {tickets.map((ticket) => (
-              <li key={ticket.id} className="border p-4 rounded-lg bg-white shadow-sm">
-                <div className="flex justify-between items-start mb-2">
-                  <h4 className="text-lg font-semibold">{ticket.title}</h4>
-                  <div className="flex items-center gap-2">
-                    <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">{ticket.status}</span>
-                    <button 
-                    onClick={() => handleDelete(ticket.id)}
-                    className="text-red-500 text-sm underline hover:text-red-700">
-                      削除
-                    </button>
+        {/* チケット一覧 */}
+        <div className="space-y-4 mt-6">
+          <h3 className="text-xl font-semibold">📂 問い合わせ履歴 ({tickets.length}件)</h3>
+          {tickets.length === 0 ? (
+            <p className="text-gray-500">まだ問い合わせがありません。</p>
+          ) : (
+            <ul className="space-y-4">
+              {tickets.map((ticket) => (
+                <li key={ticket.id} className="border p-4 rounded-lg bg-white shadow-sm">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="text-lg font-semibold">{ticket.title}</h4>
+                    <div className="flex items-center gap-2">
+                      <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">{ticket.status}</span>
+                      <button 
+                      onClick={() => handleDelete(ticket.id)}
+                      className="text-red-500 text-sm underline hover:text-red-700">
+                        削除
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <p className="whitespace-pre-wrap text-gray-700 mb-2">{ticket.content}</p>
-                <div className="text-xs text-gray-500">
-                  ID: {ticket.id} | 作成日: {new Date(ticket.createdAt).toLocaleString()}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+                  <p className="whitespace-pre-wrap text-gray-700 mb-2">{ticket.content}</p>
+                  <div className="text-xs text-gray-500">
+                    ID: {ticket.id} | 作成日: {new Date(ticket.createdAt).toLocaleString()}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </main>
     </div>
   );
 }

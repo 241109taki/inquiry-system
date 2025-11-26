@@ -3,20 +3,24 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies needed for some native modules
+# ネイティブモジュール用のツールを入れる（root権限が必要なので最初にやる）
 RUN apk add --no-cache python3 make g++
 
-# Copy package files first for caching
-COPY package*.json ./
+# 作業ディレクトリの所有権を 'node' ユーザーに変更する
+RUN chown -R node:node /app
 
-# Install dependencies
+# ここから先は 'node' ユーザー (UID 1000) として実行する
+USER node
+
+# ファイルをコピーする際も所有者を指定する
+COPY --chown=node:node package*.json ./
+
+# パッケージインストール
 RUN npm install
 
-# Copy source code
-COPY . .
+# ソースコードをコピー
+COPY --chown=node:node . .
 
-# Expose the API port
 EXPOSE 4000
 
-# Start in development mode (hot reload)
 CMD ["npm", "run", "start:dev"]

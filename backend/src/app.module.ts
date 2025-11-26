@@ -7,15 +7,15 @@ import { TicketsModule } from './tickets/tickets.module';
 
 @Module({
   imports: [
-    // 1. 環境変数(.env)を読み込む設定
+    // 環境変数(.env)を読み込む設定
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    // 2. データベース(PostgreSQL)への接続設定
+    // データベース(PostgreSQL)への接続設定
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST || 'postgres', // Docker内のサービス名
+      host: process.env.DB_HOST || 'postgres',
       port: parseInt(process.env.DB_PORT || '5432', 10),
       username: process.env.DB_USER || 'admin',
       password: process.env.DB_PASSWORD || 'password123',

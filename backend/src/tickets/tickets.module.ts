@@ -5,7 +5,7 @@ import { TicketsController } from './tickets.controller';
 import { Ticket } from './entities/ticket.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Ticket])], // ★重要: Ticketエンティティを登録
+  imports: [TypeOrmModule.forFeature([Ticket])], // Ticketエンティティを登録
   controllers: [TicketsController],
   providers: [TicketsService],
 })

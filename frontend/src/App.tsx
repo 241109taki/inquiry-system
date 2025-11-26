@@ -1,5 +1,16 @@
 import React, { useEffect, useState} from 'react';
 
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
 // --- 型定義 ---
 type Ticket = {
   id: string;
@@ -28,7 +39,6 @@ function App() {
   } catch (e) {
     console.warn('Using default API URL');
   }
-
   // チケット一覧取得
   useEffect(() => {
     fetch(`${API_URL}/api/tickets`)
@@ -72,76 +82,67 @@ function App() {
     await fetch(`${API_URL}/api/tickets/${id}`, { method: 'DELETE' });
     setRefreshKey((prev) => prev + 1);
   };
-
-  // --- スタイル ---
-  const styles = {
-    container: { maxWidth: '800px', margin: '0 auto', padding: '2rem', fontFamily: 'sans-serif', color: '#333' },
-    header: { borderBottom: '2px solid #eee', paddingBottom: '1rem', marginBottom: '2rem' },
-    formCard: { background: '#f9fafb', padding: '1.5rem', borderRadius: '8px', marginBottom: '2rem', border: '1px solid #e5e7eb' },
-    input: { width: '100%', padding: '0.8rem', marginBottom: '1rem', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box' as const },
-    textarea: { width: '100%', padding: '0.8rem', marginBottom: '1rem', borderRadius: '4px', border: '1px solid #ccc', minHeight: '100px', boxSizing: 'border-box' as const },
-    button: { background: '#2563eb', color: 'white', border: 'none', padding: '0.8rem 1.5rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' as const },
-    list: { listStyle: 'none', padding: 0 },
-    ticketCard: { background: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '1.5rem', marginBottom: '1rem', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' },
-    ticketHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' },
-    statusBadge: { background: '#dbeafe', color: '#1e40af', padding: '0.2rem 0.6rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold' as const },
-    deleteBtn: { background: 'transparent', color: '#ef4444', border: '1px solid #ef4444', padding: '0.3rem 0.8rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', marginLeft: '10px' },
-    meta: { fontSize: '0.8rem', color: '#6b7280', marginTop: '1rem' }
-  };
-
   return (
-    <div style={styles.container}>
-      <header style={styles.header}>
-        <h1>🚀 問い合わせ管理システム</h1>
+    <div className="max-w-2xl mx-auto p-6 space-y-10">
+      <header>
+        <h1  className="text-3xl font-bold mb-4">問い合わせ管理システム</h1>
       </header>
 
       {/* 新規投稿フォーム */}
-      <div style={styles.formCard}>
-        <h3>📝 新規問い合わせ作成</h3>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <input
-              style={styles.input}
-              type="text"
-              placeholder="タイトル (例: ログインできない)"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <textarea
-              style={styles.textarea}
-              placeholder="詳細内容を入力してください..."
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-            />
-          </div>
-          <button style={styles.button} type="submit" disabled={loading}>
-            {loading ? '送信中...' : 'チケットを作成する'}
-          </button>
-        </form>
-      </div>
+      <Card className="p-6 space-y-6">
+        <CardHeader className="pb-0">
+          <CardTitle>📝 新規問い合わせ作成</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+            <div className="flex flex-col gap-3">
+              <input
+                type="text"
+                placeholder="タイトル (例: ログインできない)"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                className="w-full rounded-md border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <textarea
+                placeholder="詳細内容を入力してください..."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                required
+                className="w-full rounded-md border border-gray-300 p-3 min-h-[120px] focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <Button type="submit" disabled={loading} className="w-full font-bold">
+              {loading ? '送信中...' : 'チケットを作成する'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
       {/* チケット一覧 */}
-      <div>
-        <h3>📂 問い合わせ履歴 ({tickets.length}件)</h3>
+      <div className="space-y-4">
+        <h3 className="text-xl font-semibold">📂 問い合わせ履歴 ({tickets.length}件)</h3>
         {tickets.length === 0 ? (
-          <p>まだチケットがありません。</p>
+          <p className="text-gray-500">まだチケットがありません。</p>
         ) : (
-          <ul style={styles.list}>
+          <ul className="space-y-4">
             {tickets.map((ticket) => (
-              <li key={ticket.id} style={styles.ticketCard}>
-                <div style={styles.ticketHeader}>
-                  <h4 style={{ margin: 0, fontSize: '1.2rem' }}>{ticket.title}</h4>
-                  <div>
-                    <span style={styles.statusBadge}>{ticket.status}</span>
-                    <button style={styles.deleteBtn} onClick={() => handleDelete(ticket.id)}>削除</button>
+              <li key={ticket.id} className="border p-4 rounded-lg bg-white shadow-sm">
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="text-lg font-semibold">{ticket.title}</h4>
+                  <div className="flex items-center gap-2">
+                    <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">{ticket.status}</span>
+                    <button 
+                    onClick={() => handleDelete(ticket.id)}
+                    className="text-red-500 text-sm underline hover:text-red-700">
+                      削除
+                    </button>
                   </div>
                 </div>
-                <p style={{ whiteSpace: 'pre-wrap', color: '#4b5563' }}>{ticket.content}</p>
-                <div style={styles.meta}>
+                <p className="whitespace-pre-wrap text-gray-700 mb-2">{ticket.content}</p>
+                <div className="text-xs text-gray-500">
                   ID: {ticket.id} | 作成日: {new Date(ticket.createdAt).toLocaleString()}
                 </div>
               </li>

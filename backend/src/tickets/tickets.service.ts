@@ -13,30 +13,30 @@ export class TicketsService {
   ) {}
 
   // チケット作成
-  create(createTicketDto: CreateTicketDto) {
+  async create(createTicketDto: CreateTicketDto): Promise<Ticket> {
     const newTicket = this.ticketsRepository.create(createTicketDto);
-    return this.ticketsRepository.save(newTicket);
+    return await this.ticketsRepository.save(newTicket);
   }
 
   // 全件取得（作成日が新しい順）
-  findAll() {
-    return this.ticketsRepository.find({
+  async findAll(): Promise<Ticket[]> {
+    return await this.ticketsRepository.find({
       order: { createdAt: 'DESC' },
     });
   }
 
   // IDで1件取得
-  findOne(id: string) {
-    return this.ticketsRepository.findOneBy({ id });
+  async findOne(id: string): Promise<Ticket | null> {
+    return await this.ticketsRepository.findOneBy({ id });
   }
 
   // 更新
-  update(id: string, updateTicketDto: UpdateTicketDto) {
-    return this.ticketsRepository.update(id, updateTicketDto);
+  async update(id: string, updateTicketDto: UpdateTicketDto) {
+    return await this.ticketsRepository.update(id, updateTicketDto);
   }
 
   // 削除
-  remove(id: string) {
-    return this.ticketsRepository.delete(id);
+  async remove(id: string) {
+    return await this.ticketsRepository.delete(id);
   }
 }

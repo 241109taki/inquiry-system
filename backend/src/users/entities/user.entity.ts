@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Ticket } from 'src/tickets/entities/ticket.entity';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 
 export enum UserRole {
     ADMIN = 'ADMIN',
@@ -29,4 +30,7 @@ export class User {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToMany(() => Ticket, ticket => ticket.user)
+    tickets: Ticket[];
 }

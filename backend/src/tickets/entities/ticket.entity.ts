@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Ticket {
@@ -28,4 +29,7 @@ export class Ticket {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => User, user => user.tickets)
+  user: User;
 }

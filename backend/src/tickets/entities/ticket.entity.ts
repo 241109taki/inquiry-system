@@ -30,6 +30,6 @@ export class Ticket {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, user => user.tickets)
+  @ManyToOne(() => User, (user) => user.tickets)
   user: User;
 }

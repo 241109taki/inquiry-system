@@ -41,7 +41,9 @@ services:
     container_name: aiims-backend
     restart: always
     ports:
-      - "${BACKEND_PORT}:4000"
+      - "${BACKEND_PORT}:3000"
+    env_file:
+      - .env
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME}
       - REDIS_HOST=redis

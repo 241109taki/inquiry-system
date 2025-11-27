@@ -1,9 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(cookieParser());
 
   // ★ フロントエンド(localhost:3000)からのアクセスを許可する設定
   app.enableCors({
@@ -22,6 +25,6 @@ async function bootstrap() {
     transform: true, // 受信データをDTOの方に自動変換
   }));
 
-  await app.listen(4000, '0.0.0.0');
+  await app.listen(3000, '0.0.0.0');
 }
 bootstrap();

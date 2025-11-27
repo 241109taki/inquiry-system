@@ -1,14 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ForbiddenException, Request } from "@nestjs/common";
-import { UserService } from "./users.service";
-import { User, UserRole } from "./entities/user.entity";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
-
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ForbiddenException, Request } from '@nestjs/common';
+import { UsersService } from './users.service';
+import { User, UserRole } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
-  constructor(private readonly usersService: UserService) {}
+  constructor(private readonly usersService: UsersService) {}
   
   @Get('me')
   getProfile(@Request() req) {
@@ -23,7 +25,7 @@ export class UsersController {
   }
 
   @Get()
-  @UseGuards(RoleGuard)
+  @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.OPERATOR)
   findAll() {
     return this.usersService.findAll();

@@ -1,6 +1,7 @@
 # 開発用
 resume:
 	git pull
+	rm -rf backend/dist
 	cd backend && npm install
 	cd frontend && npm install
 	docker compose up -d --build

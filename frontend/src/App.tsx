@@ -169,6 +169,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/users" element={<UsersList />} />
         {/* <Route path="/inquiry" element={<Inquiry />}/> */}
+        {/* <Route path="/admin/dashboard" element={<Dashboard />}/> */}
         
         {/* デフォルトはログイン画面へ転送 */}
         <Route path="*" element={<Navigate to="/login" replace />} />

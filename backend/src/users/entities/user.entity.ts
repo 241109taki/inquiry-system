@@ -30,8 +30,8 @@ export class User {
     failedAttempts: number;
 
     // ロック解除日時
-    @Column({ nullable: true })
-    lockedUntil: Date;
+    @Column({ type: 'timestamp', nullable: true })
+    lockedUntil: Date  | null;
 
     @CreateDateColumn()
     createdAt: Date;

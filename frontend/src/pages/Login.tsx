@@ -2,6 +2,12 @@ import { useState } from 'react';
 import { apiClient } from '../lib/axios';
 import { useNavigate } from 'react-router-dom';
 
+export const UserRole = {
+  ADMIN: 'ADMIN',
+  OPERATOR: 'OPERATOR',
+  CUSTOMER: 'CUSTOMER',
+} as const;
+
 export const Login = () => {
   const [email, setEmail] = useState('admin@example.com'); // デバッグ用に初期値を入れておく
   const [password, setPassword] = useState('admin123');
@@ -13,14 +19,33 @@ export const Login = () => {
     setError('');
 
     try {
-      await apiClient.post('/auth/login', { email, password });
+      const response = await apiClient.post('api/auth/login', { email, password });
+      console.log('Login success!', response.data);
+      const role = response.data.user.role;
       
-      console.log('Login success!');
-      // ログインできたらダッシュボード（またはユーザー一覧）へ飛ばす
-      navigate('/users'); 
+      switch (role) {
+        case UserRole.ADMIN:
+          navigate('/admin/dashboard');
+          break;
+        case UserRole.OPERATOR:
+          navigate('/operator/tasks');
+          break;
+        case UserRole.CUSTOMER:
+          navigate('/mypage');
+          break;
+        default:
+          navigate('/');
+          break;
+      }
+
     } catch (err: any) {
       console.error(err);
-      setError('ログインに失敗しました。メールアドレスかパスワードを確認してください。');
+      if (err.response && err.response.data && err.response.data.message) {
+        const msg = err.response.data.message;
+        setError(Array.isArray(msg) ? msg.join(', ') : msg);
+      } else {
+        setError('ログインに失敗しました。メールアドレスかパスワードを確認してください。');
+      }
     }
   };
 

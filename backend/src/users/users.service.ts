@@ -42,8 +42,8 @@ export class UsersService {
   }
 
   // 更新
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    return await this.usersRepository.update(id, updateUserDto);
+  async update(id: string, user: Partial<User>) {
+    return await this.usersRepository.update(id, user);
   }
 
   // 削除

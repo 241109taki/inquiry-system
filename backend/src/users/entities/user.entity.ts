@@ -25,6 +25,14 @@ export class User {
     })
     role: UserRole;
 
+    // 連続失敗回数
+    @Column({ default:0 })
+    failedAttempts: number;
+
+    // ロック解除日時
+    @Column({ nullable: true })
+    lockedUntil: Date;
+
     @CreateDateColumn()
     createdAt: Date;
 

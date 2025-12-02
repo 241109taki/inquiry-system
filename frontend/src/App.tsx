@@ -1,6 +1,8 @@
 // import React, { useEffect, useState} from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Login } from './pages/Login';
+import CreateTicket from './pages/Inquiry';
+import AdminDashboard from './pages/dashboard';
 
 // import { Button } from "@/components/ui/button"
 // import {
@@ -168,8 +170,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/users" element={<UsersList />} />
-        {/* <Route path="/inquiry" element={<Inquiry />}/> */}
-        {/* <Route path="/admin/dashboard" element={<Dashboard />}/> */}
+        <Route path="/inquiry" element={<CreateTicket />}/>
+        <Route path="/admin/dashboard" element={<AdminDashboard />}/>
         
         {/* デフォルトはログイン画面へ転送 */}
         <Route path="*" element={<Navigate to="/login" replace />} />

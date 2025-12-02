@@ -1,11 +1,6 @@
 import { Ticket } from 'src/tickets/entities/ticket.entity';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-
-export enum UserRole {
-    ADMIN = 'ADMIN',
-    OPERATOR = "OPERATOR",
-    CUSTOMER = "CUSTOMER",
-}
+import { UserRole } from './user-role.enum';
 
 @Entity('users')
 export class User {
@@ -17,6 +12,9 @@ export class User {
 
     @Column()
     password: string;
+
+    @Column()
+    name: string;
 
     @Column({
         type: 'enum',
@@ -32,6 +30,9 @@ export class User {
     // ロック解除日時
     @Column({ type: 'timestamp', nullable: true })
     lockedUntil: Date  | null;
+
+    @Column({ nullable: true })
+    hashedRefreshToken: string;
 
     @CreateDateColumn()
     createdAt: Date;

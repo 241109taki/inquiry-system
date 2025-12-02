@@ -8,7 +8,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 // 開発用
 import { OnModuleInit } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { UserRole } from './entities/user.entity';
+import { UserRole } from './entities/user-role.enum';
 
 
 @Injectable()
@@ -62,6 +62,7 @@ export class UsersService {
       await this.usersRepository.save({
         email: adminEmail,
         password: hashedPassword,
+        name: "admin1",
         role: UserRole.ADMIN,
       });
       console.log('Default Admin User Created: admin@example.com / admin123');

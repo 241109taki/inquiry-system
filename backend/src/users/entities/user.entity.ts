@@ -1,8 +1,9 @@
 import { Ticket } from 'src/tickets/entities/ticket.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, Unique } from 'typeorm';
 import { UserRole } from './user-role.enum';
 
 @Entity('users')
+@Unique(['email'])
 export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;

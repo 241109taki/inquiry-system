@@ -2,8 +2,6 @@ import { ForbiddenException, Injectable, UnauthorizedException } from "@nestjs/c
 import { UsersService } from "src/users/users.service";
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { performanceTimestampProvider } from "rxjs/internal/scheduler/performanceTimestampProvider";
-import { User } from "src/users/entities/user.entity";
 
 @Injectable()
 export class AuthService {
@@ -59,7 +57,8 @@ export class AuthService {
       throw new UnauthorizedException('メールアドレスまたはパスワードが間違っています。')
     }
   }
-
+  
+  // Cookieトークン生成
   async getTokens(userId: String, email: string, role:string) {
     const payload = { sub: userId, email, role };
     const [at, rt] = await Promise.all([

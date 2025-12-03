@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -19,9 +19,25 @@ export class UsersService {
   ) {}
   
   // User作成
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const newUser = this.usersRepository.create(createUserDto);
-    return await this.usersRepository.save(newUser);
+  async create(createUserDto: CreateUserDto): Promise<void> {
+    const { email, password, name, role } = createUserDto;
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const newUser = this.usersRepository.create({
+      email,
+      password: hashedPassword,
+      name,
+      role: role || UserRole.CUSTOMER,
+    });
+    try {
+      await this.usersRepository.save(newUser);
+    } catch (error) {
+      if (error.code === '23505') {
+        throw new ConflictException('このメールアドレスは既に使用されています');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
 
   // 全ユーザー取得(作成日古い順)

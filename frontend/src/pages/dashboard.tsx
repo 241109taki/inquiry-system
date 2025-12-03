@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../lib/axios';
 
 interface Ticket {
@@ -12,11 +13,12 @@ interface Ticket {
 
 export default function AdminDashboard() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        const response = await apiClient.get('/admin/tickets'); // 管理者用エンドポイント
+        const response = await apiClient.get('/api/tickets');
         setTickets(response.data);
       } catch (error) {
         console.error('データの取得に失敗:', error);
@@ -25,9 +27,28 @@ export default function AdminDashboard() {
     fetchTickets();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await apiClient.post('/api/auth/logout');
+      navigate('/login');
+    } catch (error) {
+      console.error('ログアウトに失敗しました:', error);
+      alert('ログアウトに失敗しました');
+    }
+  };
+
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">管理者ダッシュボード</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">管理者ダッシュボード</h1>
+        
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+        >
+          ログアウト
+        </button>
+      </div>
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">
@@ -72,4 +93,8 @@ export default function AdminDashboard() {
       </div>
     </div>
   );
+}
+
+function async() {
+  throw new Error('Function not implemented.');
 }

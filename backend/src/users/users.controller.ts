@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ForbiddenException, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ForbiddenException, Request, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { UserRole } from './entities/user-role.enum';
@@ -18,11 +18,16 @@ export class UsersController {
     return req.user;
   }
 
-  @Post()
+  @Post('/create')
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @UsePipes(ValidationPipe)
+  async create(@Body() createUserDto: CreateUserDto) {
+    await this.usersService.create(createUserDto);
+    return {
+      message: 'ユーザーの登録が完了しました。',
+      email: createUserDto.email
+    };
   }
 
   @Get()
@@ -54,6 +59,4 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
-  
-
 }
